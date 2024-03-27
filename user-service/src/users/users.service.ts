@@ -41,7 +41,6 @@ export class UsersService {
       throw new InternalServerErrorException('Invalid ID');
     }
 
-    // Error if user not found
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -73,7 +72,7 @@ export class UsersService {
       return user;
     } catch (error) {
       if (error.code === 11000) {
-        throw new ConflictException('Cet e-mail est déjà utilisé');
+        throw new ConflictException('Email already exists');
       }
       throw error;
     }

@@ -1,19 +1,18 @@
 import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
+import { UserSchema } from './schemas/user.schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { usersSchema } from './schemas/user.schema';
 import { JwtModule } from '@nestjs/jwt';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: 'users', schema: usersSchema },
-    ]),
-    JwtModule.register({
+    JwtModule.register({ 
       secret: '667im?betterthanvolvo!',
       signOptions: { expiresIn: '60m' },
     }),
+    HttpModule
   ],
   controllers: [UsersController],
   providers: [UsersService],
