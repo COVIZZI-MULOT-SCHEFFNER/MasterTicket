@@ -61,28 +61,27 @@ export class UsersController {
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto): Promise<string> {
-    let token = await this.usersService.loginUser(
-      createUserDto.email,
-      createUserDto.password,
-    );
-    if (!token) {
-      const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-      createUserDto.password = hashedPassword;
-      try {
-        await this.usersService.create(createUserDto);
-      } catch (error) {
-        throw new BadRequestException('Error: Cant create user.');
-      }
-      token = await this.usersService.loginUser(
+    try {
+      const token = await this.usersService.loginUser(
         createUserDto.email,
         createUserDto.password,
       );
+      return token;
+    } catch (error) {
+      const password = createUserDto.password;
+      const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+      createUserDto.password = hashedPassword;
+      await this.usersService.create(createUserDto);
+
+      const token = await this.usersService.loginUser(
+        createUserDto.email,
+        password,
+      );
+
+      return token;
     }
-    if (!token) {
-      throw new UnauthorizedException();
-    }
-    return token;
   }
+
 
 
 }
