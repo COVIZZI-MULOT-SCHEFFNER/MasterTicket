@@ -1,31 +1,29 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-@Schema({
-  timestamps: true,
-})
-export class users {
-  @Prop()
+  @Column()
   firstname: string;
 
-  @Prop()
+  @Column()
   lastname: string;
 
-  @Prop({ unique: true })
+  @Column({ unique: true })
   email: string;
 
-  @Prop()
+  @Column()
   phone: string;
 
-  @Prop()
+  @Column()
   password: string;
 
-  @Prop()
+  @Column()
   role: string;
 
+  @Column()
   createdAt: Date;
+  @Column()
   updatedAt: Date;
-  _id: string;
-
 }
-
-export const usersSchema = SchemaFactory.createForClass(users);

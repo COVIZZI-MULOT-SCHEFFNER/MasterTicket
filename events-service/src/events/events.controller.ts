@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dtos/create-events.dto';
-import { events } from './schema/events.schema';
+import { UpdateEventDto } from './dtos/update-events.dto';
 
 @Controller('events')
 export class EventsController {
@@ -31,7 +31,7 @@ export class EventsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatedEvent: events) {
+  update(@Param('id') id: string, @Body() updatedEvent: UpdateEventDto) {
     return this.eventsService.update(id, updatedEvent);
   }
 

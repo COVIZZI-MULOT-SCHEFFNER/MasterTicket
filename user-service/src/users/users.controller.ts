@@ -1,13 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UnauthorizedException, HttpStatus, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UnauthorizedException,
+  HttpStatus,
+  HttpCode,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login.dto';
-import { users } from './schemas/user.schema';
+import { User } from './schemas/user.schema';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -25,17 +35,12 @@ export class UsersController {
   }
 
   @Get('/me/:id')
-  findOne(
-    @Param('id') id: string
-  ) {
+  findOne(@Param('id') id: string) {
     return this.usersService.findById(id);
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateUserDto: users
-  ) {
+  update(@Param('id') id: string, @Body() updateUserDto: User) {
     return this.usersService.update(id, updateUserDto);
   }
 
@@ -44,10 +49,11 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
-
   @Post('validate')
   @HttpCode(HttpStatus.OK)
-  async validateUser(@Body() loginUserDto: LoginUserDto): Promise<{ token: string }> {
+  async validateUser(
+    @Body() loginUserDto: LoginUserDto,
+  ): Promise<{ token: string }> {
     const user = await this.usersService.validateUser(
       loginUserDto.email,
       loginUserDto.password,
@@ -58,5 +64,4 @@ export class UsersController {
     const token = await this.usersService.generateJwt(user);
     return { token };
   }
-
 }

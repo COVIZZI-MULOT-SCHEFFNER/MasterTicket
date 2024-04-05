@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { EventsShema } from './schema/events.schema';
+import { Event } from './schema/events.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { EventsService } from './events.service';
 import { EventsController } from './events.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'events', schema: EventsShema }]),
+    TypeOrmModule.forFeature([Event]),
     JwtModule.register({
       secret: 'dqzdq!&FKODQJKLvEIRJ',
       signOptions: { expiresIn: '60m' },

@@ -1,108 +1,114 @@
-import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { users } from './schemas/user.schema';
-
+import { User } from './schemas/user.schema';
+import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class UsersService {
-
   constructor(
-    @InjectModel(users.name)
-    private userModel: mongoose.Model<users>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<users> {
-      const createdUser = await this.userModel.create(createUserDto);
-      createdUser.password = undefined;
-      return createdUser;
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const createdUser = this.userRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+    return this.userRepository.save(createdUser);
   }
 
-  async findAll() {
-    const users = await this.userModel
-      .find()
-      .select('-password')
-      .select('-__v')
-      .exec();
+  async findAll(): Promise<User[]> {
+    const users = await this.userRepository.find();
+    users.forEach((user) => {
+      delete user.password;
+    });
     return users;
   }
 
-  async findById(id: string): Promise<users> {
-    let user;
-    try {
-      user = await this.userModel
-        .findById(id)
-        .select('-password');
-    } catch (error) {
-      throw new InternalServerErrorException('Invalid ID');
-    }
+  async findById(id: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: [
+        'id',
+        'firstname',
+        'lastname',
+        'email',
+        'phone',
+        'role',
+        'createdAt',
+        'updatedAt',
+      ],
+    });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
+    delete user.password;
     return user;
   }
 
-  async findByEmail(email: string): Promise<users> {
-    const user = await this.userModel.findOne({
-      email: email,
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: [
+        'id',
+        'firstname',
+        'lastname',
+        'email',
+        'phone',
+        'role',
+        'createdAt',
+        'updatedAt',
+      ],
     });
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    user.password = undefined;
+    delete user.password;
     return user;
   }
 
-  async update(id: string, updateUser: users): Promise<users> {
-    if (updateUser.password) {
-      updateUser.password = await bcrypt.hash(updateUser.password, 10);
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findById(id);
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
     }
-    try {
-      const user = await this.userModel.findByIdAndUpdate(id, updateUser, {
-        new: true,
-        runValidators: true,
-      });
-      user.password = undefined;
-      return user;
-    } catch (error) {
-      if (error.code === 11000) {
-        throw new ConflictException('Email already exists');
-      }
-      throw error;
-    }
+    const updatedUser = await this.userRepository.save({
+      ...user,
+      ...updateUserDto,
+    });
+    delete updatedUser.password;
+    return updatedUser;
   }
 
-  async remove(id): Promise<users> {
-    const userDelete = await this.userModel.findByIdAndDelete(id);
-
-    if (!userDelete) {
+  async remove(id: string): Promise<void> {
+    const result = await this.userRepository.delete(id);
+    if (result.affected === 0) {
       throw new NotFoundException('User not found');
     }
-    userDelete.password = undefined;
-    return userDelete;
   }
 
-  async validateUser(email: string, password: string): Promise<users> {
-    const user = await this.userModel.findOne({ email });
+  async validateUser(email: string, password: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { email } });
     if (user && (await bcrypt.compare(password, user.password))) {
+      delete user.password;
       return user;
     }
     return null;
   }
 
-  async generateJwt(user): Promise<string> {
+  async generateJwt(user: User): Promise<string> {
     const payload = {
       firstname: user.firstname,
-      sub: user._id,
+      sub: user.id,
       role: user.role,
     };
     return this.jwtService.sign(payload, { expiresIn: '2h' });
   }
-
 }
