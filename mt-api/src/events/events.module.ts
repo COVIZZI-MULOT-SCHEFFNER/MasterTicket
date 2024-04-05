@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
+import { EventsService } from './events.service';
+import { EventsController } from './events.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { HttpModule } from '@nestjs/axios';
 
@@ -12,7 +12,7 @@ import { HttpModule } from '@nestjs/axios';
     }),
     HttpModule,
   ],
-  controllers: [UsersController],
-  providers: [UsersService],
+  controllers: [EventsController],
+  providers: [EventsService],
 })
-export class UsersModule {}
+export class EventsModule {}

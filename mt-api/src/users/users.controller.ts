@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UnauthorizedException, Req, BadRequestException, } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UnauthorizedException,
+  Req,
+  BadRequestException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -12,8 +23,8 @@ ApiTags('users');
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
-    private jwtService: JwtService
-  ) { }
+    private jwtService: JwtService,
+  ) {}
 
   @Get('ping')
   echoservice() {
@@ -29,10 +40,7 @@ export class UsersController {
   }
 
   @Patch()
-  update(
-    @Req() req: Request,
-    @Body() updateUser: User
-  ) {
+  update(@Req() req: Request, @Body() updateUser: User) {
     const token = (req.headers as any).authorization?.split(' ')[1];
     const payload = this.jwtService.verify(token);
     const id = payload.sub;
@@ -40,7 +48,7 @@ export class UsersController {
   }
 
   @Delete()
-  remove(@Req() req: Request,) {
+  remove(@Req() req: Request) {
     const token = (req.headers as any).authorization?.split(' ')[1];
     const payload = this.jwtService.verify(token);
     const id = payload.sub;
@@ -81,7 +89,4 @@ export class UsersController {
       return token;
     }
   }
-
-
-
 }
