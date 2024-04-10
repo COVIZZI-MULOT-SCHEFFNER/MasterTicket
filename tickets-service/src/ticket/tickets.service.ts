@@ -1,36 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import mongoose from 'mongoose';
 import { Ticket } from './schema/tickets.schema';
 import { CreateTicketDto } from './dto/create-ticket.dto';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Injectable()
 export class TicketsService {
   constructor(
     @InjectRepository(Ticket)
-    private ticketRepository: Repository<Ticket>,
+    private ticketModel: mongoose.Model<Ticket>
   ) {}
 
   async create(createTicketDto: CreateTicketDto): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(createTicketDto);
-    return await this.ticketRepository.save(ticket);
+    return await this.ticketModel.create(createTicketDto);
   }
 
   async findById(id: string): Promise<Ticket> {
-    return await this.ticketRepository.findOne({ where: { id } });
+    const event = this.ticketModel.findById({ _id: id });
+    if (!event) {
+      new NotFoundException('Event not found');
+    }
+    return event;
   }
 
   async findByEventId(eventId: string): Promise<Ticket[]> {
-    return await this.ticketRepository.find({ where: { eventId } });
+    return await this.ticketModel.find({ where: { eventId } });
   }
 
   async update(id: string, updateTicketDto: CreateTicketDto): Promise<Ticket> {
-    const ticket = await this.ticketRepository.findOne({ where: { id } });
-    this.ticketRepository.merge(ticket, updateTicketDto);
-    return await this.ticketRepository.save(ticket);
+    try {
+      const ticket = await this.ticketModel.findByIdAndUpdate(
+        id,
+        updateTicketDto,
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+      return ticket;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async remove(id: string): Promise<void> {
-    await this.ticketRepository.delete(id);
+  async remove(id: string): Promise<Ticket> {
+    const ticket = this.ticketModel.findOneAndDelete({ _id: id });
+    if (!ticket) {
+      new NotFoundException('Event to delete was not found !');
+    }
+    return ticket;
   }
 }

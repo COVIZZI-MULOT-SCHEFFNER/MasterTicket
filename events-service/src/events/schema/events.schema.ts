@@ -1,27 +1,28 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Entity()
-export class Event {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-  @Column()
+@Schema({ timestamps: true })
+export class events {
+  @Prop({ unique: true })
   name: string;
 
-  @Column()
+  @Prop()
   date: Date;
 
-  @Column()
+  @Prop()
   location: string;
 
-  @Column()
+  @Prop()
   numberOfPlace: number;
 
-  @Column()
+  @Prop()
   description: string;
 
-  @Column()
+  @Prop()
   ticketPrice: number;
 
   createtAd: Date;
   updatedAt: Date;
+  _id: string;
 }
+
+export const EventsShema = SchemaFactory.createForClass(events);

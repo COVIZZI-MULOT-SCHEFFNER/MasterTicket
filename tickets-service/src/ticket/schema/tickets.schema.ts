@@ -1,25 +1,23 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Entity()
+@Schema({ timestamps: true })
 export class Ticket {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
 
-  @Column()
+  @Prop()
   eventId: string;
 
-  @Column()
+  @Prop()
   userId: string;
 
-  @Column()
+  @Prop()
   number: string;
 
-  @Column()
+  @Prop()
   status: string;
 
-  @Column()
+  @Prop()
   createdAt: Date;
 
-  @Column()
+  @Prop()
   updatedAt: Date;
 }
