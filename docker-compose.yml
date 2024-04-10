@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  user-db:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - user-db-volume:/data/db
+
+  user-service:
+    build: ./user-service
+    environment:
+      DB_URI: "mongodb://root:example@user-db/userServiceDB?authSource=admin"
+    depends_on:
+      - user-db
+    ports:
+      - "6901:6901"
+
+  front-office:
+    build: ./mt-api
+    environment:
+      DB_URI: "mongodb://root:example@user-db/userServiceDB?authSource=admin"
+      user_service_url: "http://user-service:6901/users"
+    depends_on:
+      - user-service
+    ports:
+      - "3500:3500"
+
+  back-office:
+    build: ./mt-admin-api
+    environment:
+      DB_URI: "mongodb://root:example@user-db/userServiceDB?authSource=admin"
+      user_service_url: "http://user-service:6901/users"
+    depends_on:
+      - user-service
+    ports:
+      - "3600:3600"
+
+
+
+volumes:
+  user-db-volume:

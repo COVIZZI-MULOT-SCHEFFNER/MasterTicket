@@ -13,6 +13,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { Request } from 'express';
 import { User } from './schemas/user.schema';
 import { LoginUserDto } from './dto/login.dto';
 import { ApiTags } from '@nestjs/swagger';
