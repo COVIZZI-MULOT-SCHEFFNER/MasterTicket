@@ -4,10 +4,26 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login.dto';
 import { users } from './schemas/user.schema';
+import { GetJwtToken } from '../common/decorators/get-jwt-token.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
+
+  @Get('/ping')
+  ping() {
+    return "User Service is up and running !";
+  }
+
+  @Get('verify-token')
+  async verifyToken(@GetJwtToken() token: string) {
+    try {
+      const decoded = await this.usersService.validateToken(token);
+      return { isValid: true, decoded };
+    } catch (error) {
+      return { isValid: false, message: 'Invalid token' };
+    }
+  }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
