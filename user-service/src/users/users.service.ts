@@ -105,4 +105,8 @@ export class UsersService {
     return this.jwtService.sign(payload, { expiresIn: '2h' });
   }
 
+  async validateToken(token: string): Promise<any> {
+    return this.jwtService.verify(token);
+  }
+
 }

@@ -6,12 +6,12 @@ import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService) { }
 
   async echo() {
     try {
       return await firstValueFrom(
-        this.httpService.get(process.env.user_service_url),
+        this.httpService.get(process.env.user_service_url + '/ping'),
       ).then((response) => {
         return response.data;
       });
@@ -96,4 +96,16 @@ export class UsersService {
       );
     }
   }
+
+  async validateToken(token: string): Promise<any> {
+    try {
+      return await firstValueFrom(
+        this.httpService.get(`${process.env.user_service_url}/verify-token`, { 
+          headers: { Authorization: `Bearer ${token}` } 
+        }),
+      ).then((response) => response.data);
+    } catch (error) {
+      throw new InternalServerErrorException('Error: User service is offline.');
+    }
+}
 }
