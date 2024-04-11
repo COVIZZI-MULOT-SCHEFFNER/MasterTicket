@@ -9,19 +9,45 @@ export class UsersService {
     private readonly httpService: HttpService,
   ) {}
 
-  async echo(){
+  async echo() {
     try {
       return await firstValueFrom(
-        this.httpService.get(process.env.user_service_url)
+        this.httpService.get(process.env.user_service_url+'/ping'),
       ).then((response) => {
         return response.data;
-      }
-      );
+      });
     } catch (error) {
       throw new InternalServerErrorException('Error: User service is offline.');
     }
   }
 
+  async update(id: string, updateUserDto: any): Promise<User> {
+    try {
+      return await firstValueFrom(
+        this.httpService.patch(`${process.env.user_service_url}/${id}`, updateUserDto)
+      ).then((response) => {
+        return response.data;
+      });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error: Microservice users is offline.');
+    }
+  }
+
+  async remove(id: string): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.httpService.delete(`${process.env.user_service_url}/${id}`)
+      ).then((response) => {
+        return response.data;
+      });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error: Microservice users is offline.');
+    }
+  }
+
+  
   async findAll(): Promise<User[]> {
     try {
       return await firstValueFrom(

@@ -18,6 +18,7 @@ import { User } from './schemas/user.schema';
 import { LoginUserDto } from './dto/login.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
+import { GetJwtToken } from '../common/decorators/get-jwt-token.decorator';
 
 ApiTags('users');
 @Controller('users')
@@ -30,6 +31,16 @@ export class UsersController {
   @Get('ping')
   echoservice() {
     return this.usersService.echo();
+  }
+
+  @Get('verify-token')
+  async verifyToken(@GetJwtToken() token: string) {
+    try {
+      const decoded = await this.usersService.validateToken(token);
+      return decoded;
+    } catch (error) {
+      return error;
+    }
   }
 
   @Get('/me')
