@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateEventDto } from './dtos/create-events.dto';
+import { UpdateEventDto } from './dtos/update-events.dto';
 
 @Injectable()
 export class EventsService {
@@ -23,12 +24,16 @@ export class EventsService {
     return events;
   }
 
-  async update(id: string, updatedEvent: events): Promise<events> {
+  async update(id: string, updateEventDto: UpdateEventDto): Promise<events> {
     try {
-      const event = await this.eventModel.findByIdAndUpdate(id, updatedEvent, {
-        new: true,
-        runValidators: true,
-      });
+      const event = await this.eventModel.findByIdAndUpdate(
+        id,
+        updateEventDto,
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
       return event;
     } catch (error) {
       throw error;

@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
+import { EventsModule } from './events/events.module';
+import { TicketModule } from './tickets/tickets.module';
 // import { AccountModule } from './accounts/account.module';
 // import { LogsModule } from './logs/logs.module';
 
@@ -15,6 +17,8 @@ import { UsersModule } from './users/users.module';
     }),
     MongooseModule.forRoot(process.env.DB_URI),
     UsersModule,
+    EventsModule,
+    TicketModule,
     // AccountModule,
     // LogsModule,
   ],

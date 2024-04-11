@@ -1,19 +1,19 @@
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export class Ticket {
-  @Column()
+  @Prop()
   eventId: string;
-  @Column()
+  @Prop()
   userId: string;
-  @Column()
+  @Prop()
   number: string;
-  @Column()
+  @Prop()
   status: string;
-  @Column()
+  @Prop()
   createdAt: Date;
-  @Column()
+  @Prop()
   updatedAt: Date;
 
-  @PrimaryGeneratedColumn()
+  @Prop()
   _id: string;
 }

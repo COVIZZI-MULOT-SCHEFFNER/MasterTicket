@@ -12,6 +12,11 @@ export class TicketsController {
     return this.ticketsService.create(createTicketDto);
   }
 
+  @Get('getAll')
+  getAll() {
+    return this.ticketsService.getAll();
+  }
+
   @Get()
   findById(@Body() id: string) {
     return this.ticketsService.findById(id);

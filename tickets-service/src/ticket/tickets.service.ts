@@ -17,10 +17,14 @@ export class TicketsService {
     return await this.ticketModel.create(createTicketDto);
   }
 
+  async getAll(): Promise<Ticket[]> {
+    return await this.ticketModel.find();
+  }
+
   async findById(id: string): Promise<Ticket> {
     const event = this.ticketModel.findById({ _id: id });
     if (!event) {
-      new NotFoundException('Event not found');
+      new NotFoundException('Ticket not found');
     }
     return event;
   }
@@ -48,7 +52,7 @@ export class TicketsService {
   async remove(id: string): Promise<Ticket> {
     const ticket = this.ticketModel.findOneAndDelete({ _id: id });
     if (!ticket) {
-      new NotFoundException('Event to delete was not found !');
+      new NotFoundException('Ticket to delete was not found !');
     }
     return ticket;
   }
