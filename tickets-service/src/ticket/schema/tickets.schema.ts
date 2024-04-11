@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ timestamps: true })
-export class Ticket {
+export class tickets {
   @Prop()
   eventId: string;
 
@@ -14,11 +14,8 @@ export class Ticket {
   @Prop()
   status: string;
 
-  @Prop()
   createdAt: Date;
-
-  @Prop()
   updatedAt: Date;
 }
 
-export const ticketsSchema = SchemaFactory.createForClass(Ticket);
+export const ticketsSchema = SchemaFactory.createForClass(tickets);

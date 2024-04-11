@@ -2,8 +2,8 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { CreateTicketDto } from './dto/create-ticket.dto';
-import { Ticket } from './schema/ticket.schema';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { tickets } from './schema/ticket.schema';
 
 @Injectable()
 export class TicketService {
@@ -23,7 +23,7 @@ export class TicketService {
     }
   }
 
-  async create(createTicketDto: CreateTicketDto): Promise<Ticket> {
+  async create(createTicketDto: CreateTicketDto): Promise<tickets> {
     try {
       return await firstValueFrom(
         this.httpService.post(process.env.ticket_service_url, createTicketDto),
@@ -37,7 +37,7 @@ export class TicketService {
     }
   }
 
-  async findById(id: string): Promise<Ticket> {
+  async findById(id: string): Promise<tickets> {
     try {
       return await firstValueFrom(
         this.httpService.get(process.env.ticket_service_url + id),
@@ -51,7 +51,7 @@ export class TicketService {
     }
   }
 
-  async findByEventId(id: string): Promise<Ticket> {
+  async findByEventId(id: string): Promise<tickets> {
     try {
       return await firstValueFrom(
         this.httpService.get(
@@ -67,7 +67,7 @@ export class TicketService {
     }
   }
 
-  async update(id: string, updateTicketDto: UpdateTicketDto): Promise<Ticket> {
+  async update(id: string, updateTicketDto: UpdateTicketDto): Promise<tickets> {
     try {
       return await firstValueFrom(
         this.httpService.patch(
@@ -84,7 +84,7 @@ export class TicketService {
     }
   }
 
-  async remove(id: string): Promise<Ticket> {
+  async remove(id: string): Promise<tickets> {
     try {
       return await firstValueFrom(
         this.httpService.delete(process.env.ticket_service_url + id),

@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Get, Patch, Delete } from '@nestjs/common';
-import { Ticket } from './schema/tickets.schema';
+import { tickets } from './schema/tickets.schema';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { TicketsService } from './tickets.service';
 
@@ -22,13 +22,13 @@ export class TicketsController {
     return this.ticketsService.findById(id);
   }
 
-  @Get('byEventId/')
-  findByEventId(@Body() eventId: string) {
-    return this.ticketsService.findByEventId(eventId);
+  @Get('byTicketId/')
+  findByTicketId(@Body() id: string) {
+    return this.ticketsService.findByTicketId(id);
   }
 
   @Patch()
-  update(@Body() id: string, @Body() ticket: Ticket) {
+  update(@Body() id: string, @Body() ticket: tickets) {
     return this.ticketsService.update(id, ticket);
   }
 

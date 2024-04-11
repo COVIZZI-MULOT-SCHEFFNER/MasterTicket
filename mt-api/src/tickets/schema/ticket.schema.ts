@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-export class Ticket {
+@Schema({ timestamps: true })
+export class tickets {
   @Prop()
   eventId: string;
   @Prop()
@@ -17,3 +18,5 @@ export class Ticket {
   @Prop()
   _id: string;
 }
+
+export const ticketsSchema = SchemaFactory.createForClass(tickets);
