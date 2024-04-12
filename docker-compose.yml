@@ -9,41 +9,81 @@ services:
     volumes:
       - user-db-volume:/data/db
 
+  evnt-db:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - event-db-volume:/data/db
+
+  ticket-db:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - ticket-db-volume:/data/db
+
   user-service:
     build: ./user-service
     environment:
-      DB_URI: "mongodb://root:example@user-db/userServiceDB?authSource=admin"
+      DB_URI: 'mongodb://root:example@user-db/userServiceDB?authSource=admin'
     depends_on:
       - user-db
     ports:
-      - "6901:6901"
+      - '6901:6901'
+
+  event-service:
+    build: ./event-service
+    environment:
+      DB_URI: 'mongodb://root:example@event-db/eventServiceDB?authSource=admin'
+    depends_on:
+      - event-db
+    ports:
+      - '6902:6902'
+
+  ticket-service:
+    build: ./ticket-service
+    environment:
+      DB_URI: 'mongodb://root:example@ticket-db/ticketServiceDB?authSource=admin'
+    depends_on:
+      - ticket-db
+    ports:
+      - '6903:6903'
 
   front-office:
     build: ./mt-api
     environment:
-      DB_URI: "mongodb://root:example@user-db/userServiceDB?authSource=admin"
-      user_service_url: "http://user-service:6901/users"
+      DB_URI: 'mongodb://root:example@user-db/userServiceDB?authSource=admin'
+      user_service_url: 'http://user-service:6901/users'
     depends_on:
       - user-service
+      - event-service
+      - ticket-service
     ports:
-      - "3500:3500"
+      - '3500:3500'
 
   back-office:
     build: ./mt-admin-api
     environment:
-      DB_URI: "mongodb://root:example@user-db/userServiceDB?authSource=admin"
-      user_service_url: "http://user-service:6901/users"
+      DB_URI: 'mongodb://root:example@user-db/userServiceDB?authSource=admin'
+      user_service_url: 'http://user-service:6901/users'
     depends_on:
       - user-service
+      - event-service
+      - ticket-service
     ports:
-      - "3600:3600"
+      - '3600:3600'
 
   front-end:
     build: ./masterticket-app
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
       - user-service
+      - event-service
+      - ticket-service
       - front-office
       - back-office
 

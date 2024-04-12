@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { events } from './schema/events.schema';
-import { JwtService } from '@nestjs/jwt';
 import mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateEventDto } from './dtos/create-events.dto';
@@ -10,8 +9,7 @@ import { UpdateEventDto } from './dtos/update-events.dto';
 export class EventsService {
   constructor(
     @InjectModel(events.name)
-    private eventModel: mongoose.Model<events>,
-    private jwtService: JwtService
+    private eventModel: mongoose.Model<events>
   ) {}
 
   async create(createEventDto: CreateEventDto): Promise<events> {
