@@ -7,9 +7,8 @@ const useTokenValidation = () => {
   useEffect(() => {
     const checkTokenValidity = async () => {
       const token = getToken();
-
       if (!token) return;
-
+      
       try {
         await axios.get(`${apiConfig.baseURL}users/verify-token`, {
           headers: { Authorization: `Bearer ${token}` }

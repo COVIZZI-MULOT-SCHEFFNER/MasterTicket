@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { getToken } from '../services/storageService';
+import { getToken, removeToken } from '../services/storageService';
 
 const useUserRole = () => {
   const [role, setRole] = useState(null);
@@ -13,6 +13,7 @@ const useUserRole = () => {
         const currentTime = Date.now() / 1000;
         if (decodedToken.exp < currentTime) {
           setRole(null);
+          removeToken();
         } else {
           setRole(decodedToken.role);
         }
