@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
+import { tickets } from './schema/tickets.schema';
 
 @Injectable()
 export class TicketsService {
@@ -9,7 +10,7 @@ export class TicketsService {
   async echo() {
     try {
       return await firstValueFrom(
-        this.httpService.get(process.env.ticket_service_url),
+        this.httpService.get(process.env.ticket_service_url+'/ping'),
       ).then((response) => {
         return response.data;
       });
@@ -19,16 +20,17 @@ export class TicketsService {
       );
     }
   }
-  async getAll() {
+  async getAll(): Promise<tickets[]> {
     try {
-      return await firstValueFrom(
-        this.httpService.get(process.env.ticket_service_url + '/getAll'),
-      ).then((response) => {
-        return response.data;
-      });
+      const response = await firstValueFrom(
+        this.httpService.get(`${process.env.ticket_service_url}/getAll`)
+      );
+      return response.data;
     } catch (error) {
+      console.error('Error fetching all tickets:', error);
       throw new InternalServerErrorException(
         'Error: Ticket service is offline.',
+        error.response?.data?.message || error.message
       );
     }
   }

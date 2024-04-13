@@ -63,6 +63,21 @@
     "firstname": "First name",
     "email": "Email",
     "role": "Role",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "noEventsFound": "No events found",
+    "reservationNumber": "Reservation number",
+    "reservationNumberTicket": "Ticket number",
+    "reservationStatus": "Status",
+    "noReservationsFound": "No reservations found",
+    "youCanBookReservations": "You can book reservations here",
+    "goToReservations": "Go to reservations",
+    "reservationSuccessful": "Reservation successful",
+    "reservationFailed": "Reservation failed",
+    "tickets": "Tickets",
+    "totalPrice": "Total price",
+    "cardNumber": "Card number",
+    "expiryDate": "Expiration date",
+    "cvv": "CVV",
+    "reserve": "Reserve"
   }
   

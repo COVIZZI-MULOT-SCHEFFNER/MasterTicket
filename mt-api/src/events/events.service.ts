@@ -10,7 +10,7 @@ export class EventsService {
   async echo() {
     try {
       return await firstValueFrom(
-        this.httpService.get(process.env.event_service_url),
+        this.httpService.get(process.env.event_service_url+'/ping'),
       ).then((response) => {
         return response.data;
       });

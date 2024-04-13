@@ -18,14 +18,13 @@ const EditUserForm = ({ user, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Omettre le champ password s'il est vide
     const updateData = formData.password ? formData : { ...formData, password: undefined };
     try {
       await axios.patch(`${apiConfig.adminURL}/users/${user._id}`, updateData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
       console.log('User updated successfully');
-      onClose(); // Close the form on successful update
+      onClose();
     } catch (error) {
       console.error('Error updating user:', error);
     }

@@ -1,11 +1,17 @@
 import { Module } from '@nestjs/common';
-import { tickets } from './schema/ticket.schema';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { TicketsController } from './tickets.controller';
 import { TicketService } from './tickets.service';
+import { JwtModule } from '@nestjs/jwt';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([tickets])],
+  imports: [
+    JwtModule.register({
+      secret: '667im?betterthanvolvo!',
+      signOptions: { expiresIn: '60m' },
+    }),
+    HttpModule,
+  ],
   controllers: [TicketsController],
   providers: [TicketService],
 })

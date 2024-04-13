@@ -1,6 +1,11 @@
 version: '3.8'
 
 services:
+  mailhog:
+      image: mailhog/mailhog
+      ports:
+        - "8025:8025" # Interface web
+        - "1025:1025" # Serveur SMTP
   user-db:
     image: mongo:latest
     environment:
@@ -18,13 +23,59 @@ services:
     ports:
       - "6901:6901"
 
+  event-db:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - event-db-volume:/data/db
+
+  event-service:
+    build: ./events-service
+    environment:
+      DB_URI: "mongodb://root:example@event-db/eventServiceDB?authSource=admin"
+    depends_on:
+      - event-db
+    ports:
+      - "6902:6902"
+
+  ticket-db:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - ticket-db-volume:/data/db
+
+  ticket-service:
+    build: ./tickets-service
+    environment:
+      NODE_ENV: production
+      DB_URI: "mongodb://root:example@ticket-db/ticketServiceDB?authSource=admin"
+      MAIL_HOST: mailhog
+      MAIL_PORT: 1025
+      MAIL_USER: ''
+      MAIL_PASS: ''
+      MAIL_FROM: 'no-reply@example.com'
+    depends_on:
+      - ticket-db
+      - mailhog
+    ports:
+      - "6903:6903"
+
+
   front-office:
     build: ./mt-api
     environment:
       DB_URI: "mongodb://root:example@user-db/userServiceDB?authSource=admin"
       user_service_url: "http://user-service:6901/users"
+      event_service_url: "http://event-service:6902/events"
+      ticket_service_url: "http://ticket-service:6903/tickets"
     depends_on:
       - user-service
+      - event-service
+      - ticket-service
     ports:
       - "3500:3500"
 
@@ -33,8 +84,12 @@ services:
     environment:
       DB_URI: "mongodb://root:example@user-db/userServiceDB?authSource=admin"
       user_service_url: "http://user-service:6901/users"
+      event_service_url: "http://event-service:6902/events"
+      ticket_service_url: "http://ticket-service:6903/tickets"
     depends_on:
       - user-service
+      - event-service
+      - ticket-service
     ports:
       - "3600:3600"
 
@@ -44,8 +99,12 @@ services:
       - "3000:3000"
     depends_on:
       - user-service
+      - event-service
+      - ticket-service
       - front-office
       - back-office
 
 volumes:
   user-db-volume:
+  event-db-volume:
+  ticket-db-volume:

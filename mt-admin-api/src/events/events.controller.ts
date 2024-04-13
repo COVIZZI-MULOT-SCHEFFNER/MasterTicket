@@ -1,20 +1,13 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import {  Body,  Controller,  Delete,  Get,  Param,  Patch,  Post,  UseGuards} from '@nestjs/common';
 import { AdminGuard } from 'src/guards/adminGuard';
 import { CreateEventDto } from './dto/create-events.dto';
 import { EventsService } from './events.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('events')
 @Controller('events')
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(private readonly eventsService: EventsService) { }
 
   @Get('ping')
   echoservice() {
@@ -24,6 +17,7 @@ export class EventsController {
   @Post()
   @UseGuards(AdminGuard)
   create(@Body() createEventDto: CreateEventDto) {
+    console.log('Received event data:', createEventDto);
     return this.eventsService.create(createEventDto);
   }
 
