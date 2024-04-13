@@ -42,7 +42,7 @@ const ReservationModal = ({ event, onClose }) => {
     return (
         <div className="modal modal-open">
             <div className="modal-box">
-                <h2 className="text-lg font-bold">{t('reserveTicketsFor', { eventName: event.name })}</h2>
+                <h2 className="text-lg font-bold">{t('reserveTicketsFor')} {event.name}</h2>
                 <div>
                     <label>{t('tickets')}:</label>
                     <input

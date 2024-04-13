@@ -78,6 +78,7 @@
     "cardNumber": "Card number",
     "expiryDate": "Expiration date",
     "cvv": "CVV",
-    "reserve": "Reserve"
+    "reserve": "Reserve",
+    "reserveTicketsFor": "Reserve tickets for"
   }
   

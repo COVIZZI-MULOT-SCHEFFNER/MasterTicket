@@ -86,7 +86,7 @@ const AdminEvent = () => {
                                 <td>{event.name}</td>
                                 <td>{event.date}</td>
                                 <td>{event.location}</td>
-                                <td>{event.numberOfPlaces}</td>
+                                <td>{event.numberOfPlace}</td>
                                 <td>{`${event.ticketPrice}€`}</td>
                                 <td>
                                     <button className="btn btn-secondary mr-2" onClick={() => handleEditEvent(event._id)}>
