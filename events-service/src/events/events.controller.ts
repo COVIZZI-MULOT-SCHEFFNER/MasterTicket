@@ -20,7 +20,12 @@ export class EventsController {
     return this.eventsService.create(createEventDto);
   }
 
-  @Get('getAll')
+  @Get('/ping')
+  ping() {
+    return "Event Service is up and running !";
+  }
+
+  @Get()
   findAll() {
     return this.eventsService.findAll();
   }
@@ -35,7 +40,7 @@ export class EventsController {
     return this.eventsService.update(id, updateEventDto);
   }
 
-  @Delete()
+  @Delete(':id')
   remove(@Param('id') id: string) {
     return this.eventsService.remove(id);
   }

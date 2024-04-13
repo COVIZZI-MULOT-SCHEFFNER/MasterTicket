@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { JwtModule } from '@nestjs/jwt'; // Import JwtModule
+import { JwtModule } from '@nestjs/jwt';
 import { TicketsController } from './tickets.controller';
 import { TicketsService } from './tickets.service';
 import { ticketsSchema } from './schema/tickets.schema';
@@ -11,24 +11,25 @@ import { ConfigService } from '@nestjs/config';
   imports: [
     MongooseModule.forFeature([{ name: 'tickets', schema: ticketsSchema }]),
     MailerModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         transport: {
-          host: configService.get('MAIL_HOST'),
-          port: configService.get('MAIL_PORT'),
+          host: configService.get('MAIL_HOST', 'mailhog'),
+          port: configService.get('MAIL_PORT', 1025),
+          ignoreTLS: true,
           secure: false,
           auth: {
-            user: configService.get('MAIL_USER'),
-            pass: configService.get('MAIL_PASSWORD'),
-          },
+            user: configService.get('MAIL_USER', ''),
+            pass: configService.get('MAIL_PASS', '')
+          }
         },
         defaults: {
-          from: configService.get('MAIL_SENDER '),
+          from: '"no-reply" <no-reply@example.com>',
         },
       }),
-    }),
+      inject: [ConfigService],
+    })
   ],
   controllers: [TicketsController],
   providers: [TicketsService],
 })
-export class TicketsModule {}
+export class TicketsModule { }

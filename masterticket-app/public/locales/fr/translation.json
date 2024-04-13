@@ -62,6 +62,21 @@
     "firstname": "Prénom",
     "email": "Email",
     "role": "Rôle",
-    "refresh": "Rafraîchir"
+    "refresh": "Rafraîchir",
+    "noEventsFound": "Aucun événement trouvé",
+    "reservationNumber": "Numéro de réservation",
+    "reservationNumberTicket": "Nombre de tickets réservés",
+    "reservationStatus": "Status",
+    "noReservationsFound": "Aucune réservation trouvée",
+    "youCanBookReservations": "Vous pouvez réserver des événements ici !",
+    "goToReservations": "Aller aux réservations",
+    "reservationSuccessful": "Reservation réussie",
+    "reservationFailed": "Reservation échouée",
+    "tickets": "Tickets",
+    "totalPrice": "Prix total",
+    "cardNumber": "Numéro de carte",
+    "expiryDate": "Date d'expiration",
+    "cvv": "CVV",
+    "reserve": "Réserver"
   }
   

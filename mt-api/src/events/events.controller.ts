@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ApiTags } from '@nestjs/swagger';
 import { EventsService } from './events.service';
 
-ApiTags('events');
+@ApiTags('events')
 @Controller('events')
 export class EventsController {
   constructor(
@@ -16,7 +16,7 @@ export class EventsController {
     return this.eventsService.echo();
   }
 
-  @Get('getAll')
+  @Get()
   async findAll() {
     return this.eventsService.findAll();
   }

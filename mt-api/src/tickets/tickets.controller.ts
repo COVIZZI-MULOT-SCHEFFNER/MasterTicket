@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Post, Delete, Get, Param, Patch } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { TicketService } from './tickets.service';
+import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 
 @ApiTags('tickets')
@@ -18,8 +19,13 @@ export class TicketsController {
     return this.ticketsService.findById(id);
   }
 
+  @Get('user/:userId')
+  findByUserId(@Param('userId') userId: string) {
+    return this.ticketsService.findByUserId(userId);
+  }
+
   @Get('byEventId/:id')
-  findbyEventId(@Param('id') id: string) {
+  findByEventId(@Param('id') id: string) {
     return this.ticketsService.findByEventId(id);
   }
 
@@ -28,8 +34,13 @@ export class TicketsController {
     return this.ticketsService.update(id, updateTicketDto);
   }
 
-  @Delete('id')
+  @Delete(':id')
   remove(@Param('id') id: string) {
     return this.ticketsService.remove(id);
+  }
+
+  @Post('createPayment')
+  createPayment(@Body() createPaymentDto: CreatePaymentDto) {
+    return this.ticketsService.createPayment(createPaymentDto);
   }
 }
